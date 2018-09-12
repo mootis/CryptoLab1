@@ -52,7 +52,15 @@ public class Main {
     private static String vignereEncrypt(String input, String key){
         // WIP
         // int[]
-        return null;
+        //return null;
+        Integer[] keyArray = keyToArray(key);
+        int keyLength = keyArray.length;
+        char[] inputArray = input.toCharArray();
+        char[] outputArray = new char[inputArray.length];
+        for(int i = 0; i < inputArray.length; i++){
+            outputArray[i] = characterEncrypt(inputArray[i],keyArray[i % keyLength]);
+        }
+        return new String(outputArray);
     }
 
     // Set char to int
@@ -70,11 +78,19 @@ public class Main {
         return output;
     }
 
+    private static char characterEncrypt(char raw, int key){
+        int rawInt = charToInt(raw);
+
+
+    }
+
+
+
     // Main - Will be used to declare the key as well as running encryption
     public static void main(String[] args) {
         String clean = stringClean(rawCanterbury);
         //System.out.println(clean);
-        String keyword = "syzygy";
+        String keyword = "hobnob";
 
         String encrypted = vignereEncrypt(clean, keyword);
     }
