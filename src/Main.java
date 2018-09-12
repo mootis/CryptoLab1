@@ -41,25 +41,28 @@ public class Main {
             "That hem hath holpen, whan that they were seke.\n" +
             "\n";
 
+    // Test encryption
+    private static String rawJabberwocky = "";
+
     // Clean text - remove punctuation and \n using regex
     private static String stringClean(String raw){
         String out = raw.replaceAll("([^\\w]|[\\\\n])", "");
-        out = out.toUpperCase();
+        out = out.toLowerCase();
         return out;
     }
 
-    // WIP encryption method
+    // Encryption method
     private static String vignereEncrypt(String input, String key){
-        // WIP
-        // int[]
-        //return null;
         Integer[] keyArray = keyToArray(key);
         int keyLength = keyArray.length;
         char[] inputArray = input.toCharArray();
         char[] outputArray = new char[inputArray.length];
+
+        // Go through each character, encrypting based on keyArray
         for(int i = 0; i < inputArray.length; i++){
             outputArray[i] = characterEncrypt(inputArray[i],keyArray[i % keyLength]);
         }
+
         return new String(outputArray);
     }
 
@@ -78,20 +81,20 @@ public class Main {
         return output;
     }
 
+    // Rotates characters through the alphabet based on an integer key
     private static char characterEncrypt(char raw, int key){
         int rawInt = charToInt(raw);
-
-
+        char output = (char)('a' + ((rawInt + key) % 26));
+        return output;
     }
-
-
 
     // Main - Will be used to declare the key as well as running encryption
     public static void main(String[] args) {
         String clean = stringClean(rawCanterbury);
-        //System.out.println(clean);
         String keyword = "hobnob";
+        String encrypted = vignereEncrypt(clean, keyword).toUpperCase();
 
-        String encrypted = vignereEncrypt(clean, keyword);
+        // Displays encrypted text
+        System.out.println(encrypted);
     }
 }
