@@ -59,15 +59,19 @@ public class Decrypt {
             freqArray[i] = new Tuple<>((char)('a' + i),0.0);
         }
         int offset = 0;
+
+        // Need to write a loop that checks frequencies for each letter of the key separately - every n characters
+
+        /*
         do{
-            for(int i = offset; i != stringLength; i = (i + n) % stringLength){
+            for(int i = offset; i < stringLength; i += 1){
                 char currentLetter = charArray[i];
                 freqArray[currentLetter - 'a'].second += stringFraction;
             }
-            if(n % stringLength != 0){
-                offset += 1;
-            }
+            offset += 1;
+
         } while (offset % n != 0);
+        //*/
         HashMap<Character, Double> outputHash = new HashMap<>();
         for(Tuple<Character, Double> t:freqArray){
             outputHash.put(t.first, t.second);
@@ -111,7 +115,7 @@ public class Decrypt {
 
         public double frequencyNearness(LetterFrequency second){
             if(this.size() != second.size()){
-                return 101; //TODO approximate missing characters as 0 to allow for comparison
+                return 101;
             }
             double totalDifference = 0;
             Integer[] firstValues = (Integer[])this.frequencies.values().toArray();
@@ -131,9 +135,8 @@ public class Decrypt {
     private class FrequencyComparator implements Comparator<LetterFrequency>{
         @Override
         public int compare(LetterFrequency o1, LetterFrequency o2) {
-            return o1.frequencyNearness(englishFrequencies) - o2.frequencyNearness(englishFrequencies);
+            return (int)((o1.frequencyNearness(englishFrequencies) * 1000) - (o2.frequencyNearness(englishFrequencies) * 1000));
         }
     }
-
 
 }
