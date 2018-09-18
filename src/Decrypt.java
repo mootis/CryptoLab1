@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 public class Decrypt {
 
-    public HashMap<Character, Double> engHash = new HashMap<>();
-    public LetterFrequency englishFrequencies;
+    public static HashMap<Character, Double> engHash = new HashMap<>();
+    public static LetterFrequency englishFrequencies;
 
-    public void frequencyIntialize(){
+    public static void frequencyIntialize(){
         engHash.put('a', 8.167);
         engHash.put('b', 1.492);
         engHash.put('c', 2.782);
@@ -37,41 +37,71 @@ public class Decrypt {
         englishFrequencies = new LetterFrequency(engHash);
     }
 
-
-
-    public void decrypter(String encryptedText){
+    public static void decrypter(String encryptedText){
         frequencyIntialize();
-        LetterFrequency[] freqArray = (LetterFrequency[]) new Object[8];
+        // LetterFrequency[] freqArray = (LetterFrequency[]) new Object[8];
+
+        /*
         for(int i = 0; i < 8; i++){
                 freqArray[i] = new LetterFrequency(encryptedText, i + 1);
         }
-        Arrays.sort(freqArray, new FrequencyComparator());
+        //Arrays.sort(freqArray, new FrequencyComparator());
+        */
 
+        int keyLength = 0;
+        double currentDistance = 102; //to be compared to distance, arbitrarily larger placeholder
+        for(int i = 1; i < 9; i++){
+            // i refers to key length being checked, j refers to the current offset
+            double testDistance = 0;
+            for(int j = 0; j < i; j++){
+                LetterFrequency offsetFrequency = new LetterFrequency(encryptedText, i, j);
+                testDistance += offsetFrequency.frequencyNearness(englishFrequencies);
+            }
+            testDistance = testDistance/i;
+            if(testDistance < currentDistance){
+                keyLength = i;
+                currentDistance = testDistance;
+            }
+
+        }
+
+        String key = getKeyByLength(encryptedText, keyLength);
+        System.out.println(keyLength);
+        String decrypted = decryptByKey(encryptedText, key);
     }
 
-    private HashMap<Character, Double> getFrequencies(String s, int n){
+    private static String getKeyByLength(String encrypted, int length){
+        return null;
+        //check each letterFrequency at each offset
+        //from there, find most similar letter counts, and find the letter that would make them closest
+        //and append them together into a string
+    }
+
+    private static String decryptByKey(String encrypted, String key){
+        return null;
+        //convert both to charArrays and subtract by character
+        //use modulo for both subtraction and looping through the key
+    }
+
+    // Get the frequencies at the character count
+    private static HashMap<Character, Double> getFrequencies(String s, int n, int offset){
 
         char[] charArray = s.toCharArray();
         int stringLength = s.length();
         double stringFraction = 1/stringLength;
-        Tuple<Character, Double>[] freqArray = (Tuple[])new Object[]{null,null};
+        Tuple<Character, Double>[] freqArray = null; //FIX need to initialize properly
+
         for(int i = 0; i < 26; i++){
             freqArray[i] = new Tuple<>((char)('a' + i),0.0);
         }
-        int offset = 0;
 
         // Need to write a loop that checks frequencies for each letter of the key separately - every n characters
 
-        /*
-        do{
-            for(int i = offset; i < stringLength; i += 1){
-                char currentLetter = charArray[i];
-                freqArray[currentLetter - 'a'].second += stringFraction;
-            }
-            offset += 1;
+        for(int i = offset; i < stringLength; i += n){
+            char currentLetter = charArray[i];
+            freqArray[currentLetter - 'a'].second += stringFraction;
+        }
 
-        } while (offset % n != 0);
-        //*/
         HashMap<Character, Double> outputHash = new HashMap<>();
         for(Tuple<Character, Double> t:freqArray){
             outputHash.put(t.first, t.second);
@@ -80,7 +110,7 @@ public class Decrypt {
 
     }
 
-    private class Tuple<X,Y> {
+    private static class Tuple<X,Y> {
         X first;
         Y second;
         public Tuple(X x, Y y){
@@ -93,11 +123,11 @@ public class Decrypt {
         }
     }
 
-    private class LetterFrequency {
+    private static class LetterFrequency {
         public HashMap<Character, Double> frequencies;
 
-        public LetterFrequency(String s, int n){
-            frequencies = getFrequencies(s, n);
+        public LetterFrequency(String s, int n, int offset){
+            frequencies = getFrequencies(s, n, offset);
         }
 
         public LetterFrequency(HashMap<Character, Double> h){

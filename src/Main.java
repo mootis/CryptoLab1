@@ -78,14 +78,14 @@ public class Main {
             "And the mome raths outgrabe.";
 
     // Clean text - remove punctuation and \n using regex
-    private static String stringClean(String raw){
+    public static String stringClean(String raw){
         String out = raw.replaceAll("([^\\w]|[\\\\n])", "");
         out = out.toLowerCase();
         return out;
     }
 
     // Encryption method
-    private static String vignereEncrypt(String input, String key){
+    public static String vignereEncrypt(String input, String key){
         Integer[] keyArray = keyToArray(key);
         int keyLength = keyArray.length;
         char[] inputArray = input.toCharArray();
@@ -129,5 +129,6 @@ public class Main {
 
         // Displays encrypted text
         System.out.println(encrypted);
+        Decrypt.decrypter(encrypted);
     }
 }
